@@ -1,0 +1,205 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+        "_generator": {
+            "name": "bicep",
+            "version": "0.4.1124.51302",
+            "templateHash": "16124957627228024430"
+        }
+    },
+    "parameters": {
+        "accessTier": {
+            "type": "string"
+        },
+        "accountType": {
+            "type": "string"
+        },
+        "allowBlobPublicAccess": {
+            "type": "bool"
+        },
+        "allowCrossTenantReplication": {
+            "type": "bool"
+        },
+        "allowSharedKeyAccess": {
+            "type": "bool"
+        },
+        "changeFeed": {
+            "type": "object"
+        },
+        "containerDeleteRetentionPolicy": {
+            "type": "object"
+        },
+        "defaultToOAuthAuthentication": {
+            "type": "bool"
+        },
+        "deleteRetentionPolicy": {
+            "type": "object"
+        },
+        "encryption": {
+            "type": "object"
+        },
+        "extendedLocation": {
+            "type": "object"
+        },
+        "identity": {
+            "type": "object"
+        },
+        "isVersionLevelWormEnabled": {
+            "type": "bool"
+        },
+        "isHnsEnabled": {
+            "type": "bool"
+        },
+        "isNfsV3Enabled": {
+            "type": "bool"
+        },
+        "isSftpEnabled": {
+            "type": "bool"
+        },
+        "isVersioningEnabled": {
+            "type": "bool"
+        },
+        "kind": {
+            "type": "string"
+        },
+        "largeFileSharesState": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "minimumTlsVersion": {
+            "type": "string"
+        },
+        "networkAclsBypass": {
+            "type": "string"
+        },
+        "networkAclsDefaultAction": {
+            "type": "string"
+        },
+        "restorePolicy": {
+            "type": "object"
+        },
+        "routingPreference": {
+            "type": "object"
+        },
+        "shareDeleteRetentionPolicy": {
+            "type": "object"
+        },
+        "storageAccountName": {
+            "type": "string"
+        },
+        "supportsHttpsTrafficOnly": {
+            "type": "bool"
+        },
+        "tags": {
+            "type": "object"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-06-01",
+            "name": "[parameters('storageAccountName')]",
+            "location": "[parameters('location')]",
+            "tags": "[if(empty(parameters('tags')), json('null'), parameters('tags'))]",
+            "sku": {
+                "name": "[parameters('accountType')]"
+            },
+            "kind": "[parameters('kind')]",
+            "extendedLocation": "[if(empty(parameters('extendedLocation')), json('null'), parameters('extendedLocation'))]",
+            "identity": "[if(empty(parameters('identity')), json('null'), parameters('identity'))]",
+            "properties": {
+                "accessTier": "[if(empty(parameters('accessTier')), json('null'), parameters('accessTier'))]",
+                "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
+                "allowCrossTenantReplication": "[parameters('allowCrossTenantReplication')]",
+                "allowSharedKeyAccess": "[parameters('allowSharedKeyAccess')]",
+                "defaultToOAuthAuthentication": "[parameters('defaultToOAuthAuthentication')]",
+                "encryption": "[if(empty(parameters('encryption')), json('null'), parameters('encryption'))]",
+                "immutableStorageWithVersioning": "[if(parameters('isVersionLevelWormEnabled'), createObject('enabled', parameters('isVersionLevelWormEnabled')), json('null'))]",
+                "isHnsEnabled": "[if(parameters('isHnsEnabled'), parameters('isHnsEnabled'), json('null'))]",
+                "isNfsV3Enabled": "[if(parameters('isNfsV3Enabled'), parameters('isNfsV3Enabled'), json('null'))]",
+                "isSftpEnabled": "[if(parameters('isSftpEnabled'), parameters('isSftpEnabled'), json('null'))]",
+                "largeFileSharesState": "[if(equals(parameters('largeFileSharesState'), 'Enabled'), parameters('largeFileSharesState'), json('null'))]",
+                "minimumTlsVersion": "[if(empty(parameters('minimumTlsVersion')), json('null'), parameters('minimumTlsVersion'))]",
+                "networkAcls": {
+                    "bypass": "[parameters('networkAclsBypass')]",
+                    "defaultAction": "[parameters('networkAclsDefaultAction')]",
+                    "ipRules": []
+                },
+                "routingPreference": "[if(empty(parameters('routingPreference')), json('null'), parameters('routingPreference'))]",
+                "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]"
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('kind'), 'FileStorage'))]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2021-06-01",
+            "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
+            "properties": {
+                "restorePolicy": "[if(empty(parameters('restorePolicy')), json('null'), parameters('restorePolicy'))]",
+                "deleteRetentionPolicy": "[if(empty(parameters('deleteRetentionPolicy')), json('null'), parameters('deleteRetentionPolicy'))]",
+                "containerDeleteRetentionPolicy": "[if(empty(parameters('containerDeleteRetentionPolicy')), json('null'), parameters('containerDeleteRetentionPolicy'))]",
+                "changeFeed": "[if(empty(parameters('changeFeed')), json('null'), parameters('changeFeed'))]",
+                "isVersioningEnabled": "[parameters('isVersioningEnabled')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ]
+        },
+        {
+            "condition": "[not(empty(parameters('shareDeleteRetentionPolicy')))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "storageAccount_FileService",
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]"
+                    },
+                    "shareDeleteRetentionPolicy": {
+                        "value": "[parameters('shareDeleteRetentionPolicy')]"
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "metadata": {
+                        "_generator": {
+                            "name": "bicep",
+                            "version": "0.4.1124.51302",
+                            "templateHash": "2458640105064095061"
+                        }
+                    },
+                    "parameters": {
+                        "storageAccountName": {
+                            "type": "string"
+                        },
+                        "shareDeleteRetentionPolicy": {
+                            "type": "object"
+                        }
+                    },
+                    "resources": [
+                        {
+                            "condition": "[not(empty(parameters('shareDeleteRetentionPolicy')))]",
+                            "type": "Microsoft.Storage/storageAccounts/fileServices",
+                            "apiVersion": "2021-06-01",
+                            "name": "[format('{0}/default', parameters('storageAccountName'))]",
+                            "properties": {
+                                "shareDeleteRetentionPolicy": "[parameters('shareDeleteRetentionPolicy')]"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ]
+        }
+    ]
+}

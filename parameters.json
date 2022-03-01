@@ -1,0 +1,122 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "accessTier": {
+            "value": "Cool"
+        },
+        "accountType": {
+            "value": "Standard_LRS"
+        },
+        "allowBlobPublicAccess": {
+            "value": true
+        },
+        "allowCrossTenantReplication": {
+            "value": true
+        },
+        "allowSharedKeyAccess": {
+            "value": true
+        },
+        "changeFeed": {
+            "value": {
+                "enabled": false
+            }
+        },
+        "containerDeleteRetentionPolicy": {
+            "value": {
+                "enabled": false
+            }
+        },
+        "defaultToOAuthAuthentication": {
+            "value": false
+        },
+        "deleteRetentionPolicy": {
+            "value": {
+                "enabled": false
+            }
+        },
+        "encryption": {
+            "value": {
+                "identity": {},
+                "keySource": "Microsoft.Storage",
+                "keyvaultProperties": {},
+                "services": {
+                    "blob": {
+                        "enabled": true
+                    },
+                    "file": {
+                        "enabled": true
+                    },
+                    "queue": {
+                        "enabled": true
+                    },
+                    "table": {
+                        "enabled": true
+                    }
+                },
+                "requireInfrastructureEncryption": false
+            }
+        },
+        "extendedLocation": {
+            "value": {}
+        },
+        "identity": {
+            "value": {}
+        },
+        "isVersionLevelWormEnabled": {
+            "value": false
+        },
+        "isHnsEnabled": {
+            "value": false
+        },
+        "isNfsV3Enabled": {
+            "value": false
+        },
+        "isSftpEnabled": {
+            "value": false
+        },
+        "isVersioningEnabled": {
+            "value": false
+        },
+        "kind": {
+            "value": "StorageV2"
+        },
+        "largeFileSharesState": {
+            "value": ""
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "minimumTlsVersion": {
+            "value": "TLS1_2"
+        },
+        "networkAclsBypass": {
+            "value": "AzureServices"
+        },
+        "networkAclsDefaultAction": {
+            "value": "Allow"
+        },
+        "restorePolicy": {
+            "value": {
+                "enabled": false
+            }
+        },
+        "routingPreference": {
+            "value": {}
+        },
+        "shareDeleteRetentionPolicy": {
+            "value": {
+                "enabled": false
+            }
+        },
+        "storageAccountName": {
+            "value": "armtest1231"
+        },
+        "supportsHttpsTrafficOnly": {
+            "value": false
+        },
+        "tags": {
+            "value": {}
+        }
+    }
+}
